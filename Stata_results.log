@@ -1,0 +1,532 @@
+-------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  /Users/tahseenjahan/Desktop/Dr.MelanieSurvey.smcl
+  log type:  smcl
+ opened on:  19 Jan 2025, 17:24:30
+
+.  use "/Users/tahseenjahan/Downloads/baseline_data.dta"
+no; data in memory would be lost
+r(4);
+
+. use "/Users/tahseenjahan/Downloads/baseline_data.dta", clear
+(HouseholdData)
+
+. describe
+
+Contains data from /Users/tahseenjahan/Downloads/baseline_data.dta
+  obs:            30                          HouseholdData
+ vars:             4                          27 Feb 2018 19:58
+ size:           360                          
+-------------------------------------------------------------------------------
+              storage   display    value
+variable name   type    format     label      variable label
+-------------------------------------------------------------------------------
+UHHID_bl        str6    %9s                   Baseline hhid
+HHAvail         byte    %8.0g      L_Yesno    Is the household Available for
+                                                interview?
+Consent         byte    %8.0g      L_Yesno    Has the household consented for
+                                                interview?
+StructureID     str4    %9s                   Structure ID
+-------------------------------------------------------------------------------
+Sorted by: 
+
+. list
+
+     +-----------------------------------------+
+     | UHHID_bl   HHAvail   Consent   Struct~D |
+     |-----------------------------------------|
+  1. |   034101       Yes       Yes       0453 |
+  2. |   034102       Yes       Yes       0454 |
+  3. |   034103       Yes       Yes       0455 |
+  4. |   034104       Yes        No       0456 |
+  5. |   034105       Yes       Yes       0457 |
+     |-----------------------------------------|
+  6. |   034106       Yes       Yes       0458 |
+  7. |   034107       Yes       Yes       0459 |
+  8. |   034108       Yes       Yes       0460 |
+  9. |   034109       Yes       Yes       0461 |
+ 10. |   034201       Yes       Yes       0462 |
+     |-----------------------------------------|
+ 11. |   034202       Yes       Yes       0463 |
+ 12. |   034203       Yes       Yes       0464 |
+ 13. |   034204       Yes       Yes       0465 |
+ 14. |   034205       Yes       Yes       0466 |
+ 15. |   034206       Yes       Yes       0467 |
+     |-----------------------------------------|
+ 16. |   034207       Yes       Yes       0468 |
+ 17. |   059101       Yes       Yes       0792 |
+ 18. |   059102       Yes       Yes       0793 |
+ 19. |   059103       Yes       Yes       0794 |
+ 20. |   059104       Yes       Yes       0795 |
+     |-----------------------------------------|
+ 21. |   059105       Yes       Yes       0796 |
+ 22. |   059106       Yes       Yes       0797 |
+ 23. |   059107       Yes       Yes       0798 |
+ 24. |   059201       Yes       Yes       0799 |
+ 25. |   059202       Yes       Yes       0800 |
+     |-----------------------------------------|
+ 26. |   059203       Yes       Yes       0801 |
+ 27. |   059204       Yes       Yes       0802 |
+ 28. |   059205       Yes       Yes       0803 |
+ 29. |   059206       Yes       Yes       0804 |
+ 30. |   059207       Yes       Yes       0805 |
+     +-----------------------------------------+
+
+. count if !missing(UHHID_bl)
+  30
+
+. count if !missing(StructureID)
+  30
+
+.  count if Consent == 1 & !missing(UHHID_bl)
+  29
+
+. count if Consent == 1 & !missing(StructureID) 
+  29
+
+.  bysort UHHID_bl (Consent): gen household_consented = Consent == 1
+
+.   br UHHID_bl household_consented
+
+. count if household_consented==1
+  29
+
+.  bysort StructureID (Consent): gen structure_consented = Consent == 1
+
+.   br StructureID structure_consented
+
+. count if  structure_consented==1
+  29
+
+. use "/Users/tahseenjahan/Downloads/midline_data.dta", clear
+
+. describe
+
+Contains data from /Users/tahseenjahan/Downloads/midline_data.dta
+  obs:            38                          
+ vars:             4                          27 Feb 2018 19:58
+ size:           836                          
+-------------------------------------------------------------------------------
+              storage   display    value
+variable name   type    format     label      variable label
+-------------------------------------------------------------------------------
+UHHID_midline   str6    %9s                   Midline hhid
+StructureID     str8    %9s                   
+visitresult     int     %34.0g     visitresult
+                                            * What was the result of your
+                                                attempt to visit this
+                                                household?
+UHHID_bl        str6    %9s                   UHHID_old_pl
+                                            * indicated variables have notes
+-------------------------------------------------------------------------------
+Sorted by: UHHID_midline
+
+. list
+
+     +---------------------------------------------------------------------+
+     | UHHID_~e   Struct~D                          visitresult   UHHID_bl |
+     |---------------------------------------------------------------------|
+  1. |                0462   House no longer exists (torn down)     034201 |
+  2. |                0455   House no longer exists (torn down)     034103 |
+  3. |                0463   House no longer exists (torn down)     034202 |
+  4. |                0465   House no longer exists (torn down)     034204 |
+  5. |                0461   House no longer exists (torn down)     034109 |
+     |---------------------------------------------------------------------|
+  6. |                0453   House no longer exists (torn down)     034101 |
+  7. |                0454   House no longer exists (torn down)     034102 |
+  8. |   034101       1955                                    .     034101 |
+  9. |   034102       1940                        House located     034102 |
+ 10. |   034103       1977                        House located     034103 |
+     |---------------------------------------------------------------------|
+ 11. |   034105       0457                        House located     034105 |
+ 12. |   034106       0458                        House located     034106 |
+ 13. |   034107       0459                        House located     034107 |
+ 14. |   034108       0460                        House located     034108 |
+ 15. |   034109       1840               Unable to locate house     034109 |
+     |---------------------------------------------------------------------|
+ 16. |   034201       1924                                    .     034201 |
+ 17. |   034202       2016               Unable to locate house     034202 |
+ 18. |   034203       0464               Unable to locate house     034203 |
+ 19. |   034204       2094                                    .     034204 |
+ 20. |   034205       0466                        House located     034205 |
+     |---------------------------------------------------------------------|
+ 21. |   034206       0467                        House located     034206 |
+ 22. |   034207       0468               Unable to locate house     034207 |
+ 23. |   059015       0798                        House located     059107 |
+ 24. |   059101       0792                        House located     059101 |
+ 25. |   059102       0793               Unable to locate house     059102 |
+     |---------------------------------------------------------------------|
+ 26. |   059103       0794                        House located     059103 |
+ 27. |   059104       0795                        House located     059104 |
+ 28. |   059105       0796                        House located     059105 |
+ 29. |   059106       0797                        House located     059106 |
+ 30. |   059107       2060                                    .     059107 |
+     |---------------------------------------------------------------------|
+ 31. |   059201       0799                        House located     059201 |
+ 32. |   059202       0800                        House located     059202 |
+ 33. |   059203       0801                        House located     059203 |
+ 34. |   059204       0802                        House located     059204 |
+ 35. |   059205       0803                        House located     059205 |
+     |---------------------------------------------------------------------|
+ 36. |   059206       0804                        House located     059206 |
+ 37. |   059207       0805                        House located     059207 |
+ 38. |   150129       2011                                    .     059103 |
+     +---------------------------------------------------------------------+
+
+.  destring UHHID_midline StructureID visitresult UHHID_bl, replace
+UHHID_midline has all characters numeric; replaced as long
+(7 missing values generated)
+characteristic __000002[destring_cmd] already exists
+r(110);
+
+. use "/Users/tahseenjahan/Downloads/midline_data.dta"
+
+. tab visitresult
+
+       What was the result of your |
+  attempt to visit this household? |      Freq.     Percent        Cum.
+-----------------------------------+-----------------------------------
+                     House located |         21       63.64       63.64
+            Unable to locate house |          5       15.15       78.79
+House no longer exists (torn down) |          7       21.21      100.00
+-----------------------------------+-----------------------------------
+                             Total |         33      100.00
+
+. label list
+visitresult:
+        -222 Other specify
+           1 House located
+           2 Unable to locate house
+           3 House no longer exists (torn down)
+
+. gen matched= UHHID_midline == UHHID_bl
+
+.    tab matched
+
+    matched |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |          9       23.68       23.68
+          1 |         29       76.32      100.00
+------------+-----------------------------------
+      Total |         38      100.00
+
+. count if matched==1
+  29
+
+. count if visitresult == 1 & matched == 1 & !missing(UHHID_bl)
+  20
+
+. use "/Users/tahseenjahan/Downloads/baseline_data.dta", clear
+(HouseholdData)
+
+. gen in_baseline = 1
+
+. save baseline_temp.dta, replace
+(note: file baseline_temp.dta not found)
+file baseline_temp.dta saved
+
+. use "/Users/tahseenjahan/Downloads/midline_data.dta"
+
+. gen in_midline = 1
+
+. duplicates report UHHID_bl
+
+Duplicates in terms of UHHID_bl
+
+--------------------------------------
+   copies | observations       surplus
+----------+---------------------------
+        1 |           20             0
+        2 |           18             9
+--------------------------------------
+
+. duplicates list UHHID_bl
+
+Duplicates in terms of UHHID_bl
+
+  +--------------------------+
+  | group:   obs:   UHHID_bl |
+  |--------------------------|
+  |      1      6     034101 |
+  |      1      8     034101 |
+  |      2      7     034102 |
+  |      2      9     034102 |
+  |      3      2     034103 |
+  |--------------------------|
+  |      3     10     034103 |
+  |      4      5     034109 |
+  |      4     15     034109 |
+  |      5      1     034201 |
+  |      5     16     034201 |
+  |--------------------------|
+  |      6      3     034202 |
+  |      6     17     034202 |
+  |      7      4     034204 |
+  |      7     19     034204 |
+  |      8     26     059103 |
+  |--------------------------|
+  |      8     38     059103 |
+  |      9     23     059107 |
+  |      9     30     059107 |
+  +--------------------------+
+
+. duplicates drop UHHID_bl, force
+
+Duplicates in terms of UHHID_bl
+
+(9 observations deleted)
+
+. merge 1:1 UHHID_bl using baseline_temp.dta
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                             1
+        from master                         0  (_merge==1)
+        from using                          1  (_merge==2)
+
+    matched                                29  (_merge==3)
+    -----------------------------------------
+
+. tabulate _merge
+
+                 _merge |      Freq.     Percent        Cum.
+------------------------+-----------------------------------
+         using only (2) |          1        3.33        3.33
+            matched (3) |         29       96.67      100.00
+------------------------+-----------------------------------
+                  Total |         30      100.00
+
+. tabulate visitresult if _merge == 3
+
+       What was the result of your |
+  attempt to visit this household? |      Freq.     Percent        Cum.
+-----------------------------------+-----------------------------------
+                     House located |         19       65.52       65.52
+            Unable to locate house |          3       10.34       75.86
+House no longer exists (torn down) |          7       24.14      100.00
+-----------------------------------+-----------------------------------
+                             Total |         29      100.00
+
+. count if _merge == 3 & visitresult == 1
+  19
+
+. use "/Users/tahseenjahan/Downloads/midline_data.dta", clear
+
+. use "/Users/tahseenjahan/Downloads/linking_file.dta"
+
+. describe
+
+Contains data from /Users/tahseenjahan/Downloads/linking_file.dta
+  obs:            32                          
+ vars:             6                          27 Feb 2018 19:58
+ size:           960                          
+-------------------------------------------------------------------------------
+              storage   display    value
+variable name   type    format     label      variable label
+-------------------------------------------------------------------------------
+UHHID_midline   str6    %9s                   Midline hhid
+StructureID     str8    %9s                   
+midline_Struc~s float   %19.0g     Midline_Structure_Status
+                                              
+midline_contact float   %16.0g     Midline_HH_Status
+                                              
+midline_HHsta~s float   %20.0g     Midline_HH_Status_2
+                                              
+torndown        float   %9.0g                 
+-------------------------------------------------------------------------------
+Sorted by: 
+
+. label list
+Midline_HH_Status:
+           0 HH Not Contacted
+           1 HH Contacted
+Midline_HH_Status_2:
+           0 Withdrawn
+           1 Survey Completed
+           2 Survey Not Completed
+Midline_Structure_Status:
+           0 Structure Not Found
+           1 Structure Found
+           2 Structure Torn Down
+
+. br midline_Structurestatus
+
+. tab midline_Structurestatus
+
+midline_Structurest |
+               atus |      Freq.     Percent        Cum.
+--------------------+-----------------------------------
+Structure Not Found |          7       22.58       22.58
+    Structure Found |         24       77.42      100.00
+--------------------+-----------------------------------
+              Total |         31      100.00
+
+. gen structure_no_exists = 0
+
+. replace structure_no_exists = 1 if torndown == 1
+(7 real changes made)
+
+. count if structure_no_exists== 1
+  7
+
+. gen unable_to_locate = 0
+
+. replace unable_to_locate = 1 if midline_Structures == 0 & torndown == 0
+(4 real changes made)
+
+. list UHHID_midline StructureID midline_Structures torndown unable_to_locate i
+> f unable_to_locate == 1
+
+     +-----------------------------------------------------------------+
+     | UHHID_~e   Struct~D   midline_Structure~s   torndown   unable~e |
+     |-----------------------------------------------------------------|
+  6. |   034203       0464   Structure Not Found          0          1 |
+  9. |   034207       0468   Structure Not Found          0          1 |
+ 11. |   059102       0793   Structure Not Found          0          1 |
+ 29. |   150129       2011   Structure Not Found          0          1 |
+     +-----------------------------------------------------------------+
+
+.  count if unable_to_locate == 1
+  4
+
+. tabulate midline_Structurestatus
+
+midline_Structurest |
+               atus |      Freq.     Percent        Cum.
+--------------------+-----------------------------------
+Structure Not Found |          7       22.58       22.58
+    Structure Found |         24       77.42      100.00
+--------------------+-----------------------------------
+              Total |         31      100.00
+
+. gen located_not_torndown = 0
+
+. replace located_not_torndown = 1 if midline_Structures == 1 & torndown == 0
+(20 real changes made)
+
+. list UHHID_midline StructureID midline_Structures torndown located_not_torndo
+> wn if located_not_torndown == 1
+
+     +-------------------------------------------------------------+
+     | UHHID_~e   Struct~D   midline_Struc~s   torndown   locate~n |
+     |-------------------------------------------------------------|
+  2. |   034105       0457   Structure Found          0          1 |
+  3. |   034106       0458   Structure Found          0          1 |
+  4. |   034107       0459   Structure Found          0          1 |
+  5. |   034108       0460   Structure Found          0          1 |
+  7. |   034205       0466   Structure Found          0          1 |
+     |-------------------------------------------------------------|
+  8. |   034206       0467   Structure Found          0          1 |
+ 10. |   059101       0792   Structure Found          0          1 |
+ 12. |   059103       0794   Structure Found          0          1 |
+ 13. |   059104       0795   Structure Found          0          1 |
+ 14. |   059105       0796   Structure Found          0          1 |
+     |-------------------------------------------------------------|
+ 15. |   059106       0797   Structure Found          0          1 |
+ 16. |   059015       0798   Structure Found          0          1 |
+ 17. |   059201       0799   Structure Found          0          1 |
+ 18. |   059202       0800   Structure Found          0          1 |
+ 19. |   059203       0801   Structure Found          0          1 |
+     |-------------------------------------------------------------|
+ 20. |   059204       0802   Structure Found          0          1 |
+ 21. |   059205       0803   Structure Found          0          1 |
+ 22. |   059206       0804   Structure Found          0          1 |
+ 23. |   059207       0805   Structure Found          0          1 |
+ 31. |   059107       2060   Structure Found          0          1 |
+     +-------------------------------------------------------------+
+
+. gen survey_complete_located = 0
+
+.  replace survey_complete_located = 1 if located_not_torndown == 1 & midline_H
+> Hstatus == 1
+(20 real changes made)
+
+. count if survey_complete_located==1
+  20
+
+.  
+. tab midline_contact midline_HHstatus
+
+                 |   midline_HHstatus
+ midline_contact | Withdrawn  Survey Co |     Total
+-----------------+----------------------+----------
+    HH Contacted |         4         23 |        27 
+-----------------+----------------------+----------
+           Total |         4         23 |        27 
+
+
+. 
+.   gen hh_contacted_withdrawn = 0
+
+. replace hh_contacted_withdrawn = 1 if midline_contact == 1 & midline_HHstatus
+>  == 0
+(4 real changes made)
+
+.  count if hh_contacted_withdrawn== 1
+  4
+
+. gen hh_contacted_withdrawn_found = 0
+
+. replace hh_contacted_withdrawn_found = 1 if midline_contact == 1 & midline_HH
+> status == 0 & midline_Structures == 1
+(1 real change made)
+
+. count if hh_contacted_withdrawn_found==1 
+  1
+
+. gen hh_contacted_withdrawn_notfound = 0
+
+. replace hh_contacted_withdrawn_notfound = 1 if midline_contact == 1 & midline
+> _HHstatus == 0 & midline_Structures == 0
+(3 real changes made)
+
+. count if hh_contacted_withdrawn_notfound ==1 
+  3
+
+. gen not_contacted_not_found = 0
+
+. replace not_contacted_not_found = 1 if midline_contact == 0 & midline_Structu
+> res == 0 [___]
+weights not allowed
+r(101);
+
+. gen missing_midline_HHstatus = 0
+
+. replace missing_midline_HHstatus = 1 if missing(midline_HHstatus)
+(5 real changes made)
+
+. gen not_contacted_not_found = 0
+variable not_contacted_not_found already defined
+r(110);
+
+. replace not_contacted_not_found = 1 if midline_contact == 0 & midline_Structu
+> res == 0
+(4 real changes made)
+
+. tab midline_Structurestatus midline_HHstatus
+
+midline_Structurest |   midline_HHstatus
+               atus | Withdrawn  Survey Co |     Total
+--------------------+----------------------+----------
+Structure Not Found |         3          0 |         3 
+    Structure Found |         1         23 |        24 
+--------------------+----------------------+----------
+              Total |         4         23 |        27 
+
+
+.  tab midline_contact midline_HHstatus
+
+                 |   midline_HHstatus
+ midline_contact | Withdrawn  Survey Co |     Total
+-----------------+----------------------+----------
+    HH Contacted |         4         23 |        27 
+-----------------+----------------------+----------
+           Total |         4         23 |        27 
+
+
+. log close
+      name:  <unnamed>
+       log:  /Users/tahseenjahan/Desktop/Dr.MelanieSurvey.smcl
+  log type:  smcl
+ closed on:  19 Jan 2025, 18:01:40
+-------------------------------------------------------------------------------
